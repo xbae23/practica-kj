@@ -1,0 +1,11 @@
+{
+  "name": "nexo-upa-acceso-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/flujo.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

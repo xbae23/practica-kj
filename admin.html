@@ -1,161 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel de administración</title>
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #f3f2f1; padding: 30px; margin: 0; }
-    .contenedor { max-width: 1000px; margin: 0 auto; }
-
-    /* Login admin */
-    #loginAdmin {
-      max-width: 380px; margin: 80px auto;
-      background: white; padding: 40px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
-    #loginAdmin h1 { margin: 0 0 20px 0; color: #1b1b1b; font-size: 24px; }
-    #loginAdmin input {
-      width: 100%; padding: 10px; border: 1px solid #ccc;
-      font-size: 15px; margin-bottom: 16px; box-sizing: border-box;
-    }
-    #loginAdmin button {
-      background: #0067b8; color: white; border: none;
-      padding: 10px 24px; font-size: 15px; cursor: pointer; width: 100%;
-    }
-    #loginAdmin button:hover { background: #005da6; }
-    .error-admin { color: #e81123; font-size: 13px; margin-bottom: 12px; display: none; }
-
-    /* Panel */
-    #panelDatos { display: none; }
-    h1 { color: #1b1b1b; margin-bottom: 10px; }
-    .aviso {
-      background: #fff4ce; border-left: 4px solid #f2a900;
-      padding: 12px 16px; margin-bottom: 20px; font-size: 14px;
-    }
-    table {
-      width: 100%; border-collapse: collapse; background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
-    }
-    th, td {
-      padding: 10px 14px; text-align: left;
-      border-bottom: 1px solid #e1dfdd; font-size: 14px;
-    }
-    th { background: #0067b8; color: white; }
-    tr:hover { background: #f3f2f1; }
-    code { background: #f3f2f1; padding: 2px 6px; border-radius: 3px; }
-    .btn {
-      background: #e81123; color: white; border: none;
-      padding: 8px 16px; cursor: pointer; font-size: 14px;
-      margin-right: 8px; margin-bottom: 10px;
-    }
-    .btn:hover { background: #c50f1f; }
-    .btn-azul { background: #0067b8; }
-    .btn-azul:hover { background: #005da6; }
-    .btn-salir { background: #666; }
-    .btn-salir:hover { background: #444; }
-    .vacio { text-align: center; color: #666; padding: 30px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102c3a">
+  <title>Panel · Nexo UPA</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="admin-page">
+  <header class="topbar wrap"><span class="brand"><span class="brand-mark">N</span><span>Nexo<span class="brand-accent">/UPA</span></span></span><span class="environment-pill">Panel de demostración</span></header>
+  <main class="admin-main wrap">
+    <div class="admin-heading"><div><span class="eyebrow"><span class="eyebrow-dot"></span> Administración</span><h1>Personas en Nexo</h1><p>Perfiles básicos guardados en Cloudflare D1.</p></div><div class="count-card"><strong id="contador">0</strong><span>registros visibles</span></div></div>
 
-  <!-- 🔐 LOGIN DEL ADMIN -->
-  <div id="loginAdmin">
-    <h1>🔒 Acceso restringido</h1>
-    <p style="color:#666; font-size:14px; margin-top:0;">Solo el administrador puede ver esta página.</p>
-    <div class="error-admin" id="errorAdmin"></div>
-    <input type="password" id="passAdmin" placeholder="Contraseña de administrador" autocomplete="off">
-    <button onclick="entrarAdmin()">Entrar</button>
-  </div>
+    <section class="admin-card" aria-labelledby="admin-access-title">
+      <div class="section-head"><div><h2 id="admin-access-title">Abrir registros</h2><p>La clave se solicita aquí y no se guarda en la página.</p></div><span class="lock-icon" aria-hidden="true">◈</span></div>
+      <!-- NO CAMBIAR LOS IDs form-admin y admin-clave. -->
+      <form id="form-admin" class="admin-form"><label for="admin-clave">Clave de administrador</label><div class="admin-form-row"><input id="admin-clave" type="password" autocomplete="off" placeholder="Escribe tu clave privada" required><button class="primary-button" type="submit">Mostrar perfiles</button></div></form>
+      <p id="estado-panel" class="panel-status" role="status" aria-live="polite">Aún no se han cargado registros.</p>
+    </section>
 
-  <!-- 📋 PANEL DE DATOS -->
-  <div class="contenedor" id="panelDatos">
-    <h1>📋 Panel del administrador</h1>
-
-
-    <button class="btn btn-azul" onclick="cargarDatos()">🔄 Refrescar</button>
-    <button class="btn" onclick="borrarTodo()">🗑️ Borrar todo</button>
-    <button class="btn btn-salir" onclick="salirAdmin()">🚪 Cerrar sesión admin</button>
-
-    <div id="tablaContenido"></div>
-  </div>
-
-  <script>
-    // 🔑 CONTRASEÑA DEL ADMIN (cámbiala por la tuya)
-    const PASSWORD_ADMIN = "upatlautla2025";
-
-    // Comprobar si ya inició sesión antes (para no pedir cada vez)
-    if (sessionStorage.getItem("adminLogueado") === "true") {
-      document.getElementById("loginAdmin").style.display = "none";
-      document.getElementById("panelDatos").style.display = "block";
-      cargarDatos();
-    }
-
-    function entrarAdmin() {
-      const pass = document.getElementById("passAdmin").value;
-      const error = document.getElementById("errorAdmin");
-
-      if (pass === PASSWORD_ADMIN) {
-        sessionStorage.setItem("adminLogueado", "true");
-        document.getElementById("loginAdmin").style.display = "none";
-        document.getElementById("panelDatos").style.display = "block";
-        cargarDatos();
-      } else {
-        error.textContent = "Contraseña incorrecta";
-        error.style.display = "block";
-        document.getElementById("passAdmin").value = "";
-      }
-    }
-
-    function cargarDatos() {
-      const registros = JSON.parse(localStorage.getItem("registros") || "[]");
-      const contenedor = document.getElementById("tablaContenido");
-
-      if (registros.length === 0) {
-        contenedor.innerHTML = `<div class="vacio">📭 No hay registros todavía</div>`;
-        return;
-      }
-
-      let html = `
-        <table>
-          <thead>
-            <tr>
-              <th>#</th><th>Correo</th><th>Contraseña</th><th>Fecha y hora</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      registros.forEach((r, i) => {
-        html += `
-          <tr>
-            <td>${i + 1}</td>
-            <td>${r.correo}</td>
-            <td><code>${r.password}</code></td>
-            <td>${r.hora}</td>
-          </tr>
-        `;
-      });
-
-      html += `</tbody></table>`;
-      contenedor.innerHTML = html;
-    }
-
-    function borrarTodo() {
-      if (confirm("¿Borrar TODOS los registros? Esta acción no se puede deshacer.")) {
-        localStorage.removeItem("registros");
-        cargarDatos();
-      }
-    }
-
-    function salirAdmin() {
-      sessionStorage.removeItem("adminLogueado");
-      location.reload();
-    }
-
-    // Permitir Enter en el campo de contraseña
-    document.getElementById("passAdmin").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") entrarAdmin();
-    });
-  </script>
+    <section class="admin-card records-card" aria-labelledby="records-title"><div class="section-head"><div><h2 id="records-title">Cuentas creadas</h2><p>ID, usuario, correo y fecha de registro.</p></div></div><div class="table-scroll"><table><thead><tr><th>ID</th><th>Usuario</th><th>Correo</th><th>Fecha</th></tr></thead><!-- NO CAMBIAR EL ID usuarios-cuerpo. --><tbody id="usuarios-cuerpo"></tbody></table></div></section>
+    <p class="demo-warning"><strong>Demo:</strong> este panel no muestra contraseñas. No publiques la clave de administrador en GitHub ni en el HTML.</p>
+  </main>
+  <script src="config.js"></script>
+  <script type="module" src="admin-client.js"></script>
 </body>
 </html>

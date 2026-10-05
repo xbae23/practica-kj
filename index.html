@@ -1,205 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar sesión en tu cuenta</title>
-  <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif; }
-    body {
-      background: #ffffff; margin: 0; padding: 0; min-height: 100vh;
-      display: flex; flex-direction: column;
-    }
-    .contenedor {
-      flex: 1; display: flex; flex-direction: column;
-      padding: 44px 44px 0 44px; max-width: 440px; width: 100%; margin: 0 auto;
-    }
-    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .logo-cuadros { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 24px; height: 24px; }
-    .logo-cuadros div { width: 100%; height: 100%; }
-    .logo-cuadros .rojo   { background: #f25022; }
-    .logo-cuadros .verde  { background: #7fba00; }
-    .logo-cuadros .azul   { background: #00a4ef; }
-    .logo-cuadros .amarillo { background: #ffb900; }
-    .logo-texto { font-size: 21px; color: #737373; font-weight: 600; letter-spacing: -0.2px; }
-    h1 { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 16px 0; }
-    .campo { position: relative; margin-bottom: 8px; }
-    .campo input {
-      width: 100%; padding: 6px 0; border: none;
-      border-bottom: 1px solid #0067b8; font-size: 15px;
-      color: #1b1b1b; outline: none; background: transparent;
-    }
-    .campo input::placeholder { color: #666; }
-    .campo input:focus { border-bottom: 2px solid #0067b8; padding-bottom: 5px; }
-    .error { color: #e81123; font-size: 13px; margin-bottom: 12px; display: none; }
-    .enlace { display: block; color: #0067b8; text-decoration: none; font-size: 15px; margin-bottom: 14px; }
-    .enlace:hover { text-decoration: underline; color: #005da6; }
-    .botones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; margin-bottom: 40px; }
-    button { font-family: inherit; font-size: 15px; padding: 6px 32px; border: none; cursor: pointer; min-width: 108px; height: 32px; }
-    .btn-atras { background: #cccccc; color: #1b1b1b; }
-    .btn-atras:hover { background: #b8b8b8; }
-    .btn-siguiente { background: #0067b8; color: #ffffff; }
-    .btn-siguiente:hover { background: #005da6; }
-    .opciones {
-      border: 1px solid #8a8886; padding: 12px 16px;
-      display: flex; align-items: center; gap: 14px;
-      cursor: pointer; font-size: 15px; color: #1b1b1b;
-      width: 100%; background: #ffffff; text-align: left; margin-bottom: 24px;
-    }
-    .opciones:hover { background: #f3f2f1; }
-    .icono-llave { width: 28px; height: 28px; flex-shrink: 0; }
-    .footer {
-      padding: 12px 44px; display: flex; justify-content: flex-end;
-      align-items: center; gap: 24px; font-size: 13px; color: #666; background: #ffffff;
-    }
-    .footer a { color: #666; text-decoration: none; font-size: 13px; }
-    .footer a:hover { text-decoration: underline; }
-    .puntos { font-weight: bold; cursor: pointer; letter-spacing: 1px; }
-    .oculto { display: none; }
-    .educativo {
-      background: #fff4ce; border-left: 4px solid #f2a900;
-      padding: 20px; margin-top: 20px; font-size: 14px;
-      color: #1b1b1b; line-height: 1.5;
-    }
-    .educativo h2 { color: #1b1b1b; font-size: 20px; margin: 0 0 10px 0; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102c3a">
+  <title>Acceso · Nexo UPA</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="access-page">
+  <div class="page-glow" aria-hidden="true"></div>
+  <header class="topbar wrap">
+    <a class="brand" href="#inicio" aria-label="Nexo UPA, inicio"><span class="brand-mark">N</span><span>Nexo<span class="brand-accent">/UPA</span></span></a>
+    <span class="environment-pill">Acceso de demostración</span>
+  </header>
 
-  <!-- PASO 1: CORREO -->
-  <div class="contenedor" id="pasoCorreo">
-    <div class="logo">
-      <div class="logo-cuadros">
-        <div class="rojo"></div><div class="verde"></div>
-        <div class="azul"></div><div class="amarillo"></div>
+  <main id="inicio" class="access-layout wrap">
+    <section class="intro" aria-labelledby="intro-title">
+      <span class="eyebrow"><span class="eyebrow-dot"></span> Tu comunidad, en un lugar</span>
+      <h1 id="intro-title">La vida universitaria sucede <em>entre todos.</em></h1>
+      <p>Entra a Nexo UPA para descubrir conversaciones, personas y oportunidades cerca de ti.</p>
+      <div class="feature-row" aria-label="Funciones de Nexo">
+        <span>Comunidad</span><span>Historias</span><span>Mensajes</span>
       </div>
-      <span class="logo-texto">Microsoft</span>
-    </div>
-    <h1>Iniciar sesión</h1>
-    <div class="campo">
-      <input type="email" id="correo" placeholder="Correo electrónico, teléfono o Skype" autocomplete="off">
-    </div>
-    <div class="error" id="errorCorreo"></div>
-    <a href="#" class="enlace">¿Todavía no tienes una cuenta? <span style="color:#0067b8;">Crea una ahora mismo</span></a>
-    <a href="#" class="enlace">¿No puedes acceder a tu cuenta?</a>
-    <div class="botones">
-      <button class="btn-atras" onclick="limpiar()">Atrás</button>
-      <button class="btn-siguiente" onclick="pasoCorreo()">Siguiente</button>
-    </div>
-    <button class="opciones">
-      <svg class="icono-llave" viewBox="0 0 24 24" fill="none" stroke="#1b1b1b" stroke-width="1.5">
-        <circle cx="8" cy="15" r="4"/>
-        <path d="M11 12l9-9M17 6l2 2M14 9l2 2"/>
-      </svg>
-      Opciones de inicio de sesión
-    </button>
-  </div>
+      <div class="orbit" aria-hidden="true"><div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-center">N</div><span class="orbit-point orbit-a"></span><span class="orbit-point orbit-b"></span><span class="orbit-point orbit-c"></span></div>
+    </section>
 
-  <!-- PASO 2: CONTRASEÑA -->
-  <div class="contenedor oculto" id="pasoPassword">
-    <div class="logo">
-      <div class="logo-cuadros">
-        <div class="rojo"></div><div class="verde"></div>
-        <div class="azul"></div><div class="amarillo"></div>
+    <section class="card" aria-labelledby="card-title">
+      <div class="card-heading"><span class="card-icon">↗</span><h2 id="card-title">Tu espacio empieza aquí</h2><p>Crea tu perfil o vuelve a entrar.</p></div>
+      <div class="tabs" role="tablist" aria-label="Acceso">
+        <button class="tab active" type="button" data-tab="registro" aria-selected="true">Crear cuenta</button>
+        <button class="tab" type="button" data-tab="entrada" aria-selected="false">Iniciar sesión</button>
       </div>
-      <span class="logo-texto">Microsoft</span>
-    </div>
-    <h1>Escribe la contraseña</h1>
-    <div style="font-size:15px; color:#1b1b1b; margin-bottom:16px;">
-      <span id="correoMostrado"></span>
-      <a href="#" onclick="volver(); return false;" style="color:#0067b8; font-size:13px; margin-left:6px;">¿No es tu cuenta?</a>
-    </div>
-    <div class="campo">
-      <input type="password" id="password" placeholder="Contraseña" autocomplete="off">
-    </div>
-    <div class="error" id="errorPassword"></div>
-    <a href="#" class="enlace">¿Olvidaste tu contraseña?</a>
-    <div class="botones">
-      <button class="btn-atras" onclick="volver()">Atrás</button>
-      <button class="btn-siguiente" onclick="pasoPassword()">Iniciar sesión</button>
-    </div>
-  </div>
 
- 
-  <script>
-    // 🔢 Contador de intentos de contraseña
-    let intentos = 0;
+      <!-- NO CAMBIAR LOS IDs form-registro, registro-usuario y registro-correo. -->
+      <form id="form-registro" class="form-stack" autocomplete="on">
+        <label for="registro-usuario">Nombre de usuario</label>
+        <div class="field-wrap"><span aria-hidden="true">@</span><input id="registro-usuario" name="usuario" type="text" inputmode="text" autocomplete="username" placeholder="tu.usuario" minlength="3" maxlength="24" pattern="[A-Za-z0-9._]{3,24}" required></div>
+        <label for="registro-correo">Correo</label>
+        <div class="field-wrap"><span aria-hidden="true">✉</span><input id="registro-correo" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required></div>
+        <button class="primary-button" type="submit">Crear mi perfil <span aria-hidden="true">→</span></button>
+      </form>
 
-    function pasoCorreo() {
-      const correo = document.getElementById("correo").value.trim();
-      const error = document.getElementById("errorCorreo");
+      <!-- NO CAMBIAR LOS IDs form-entrada y entrada-identificador. -->
+      <form id="form-entrada" class="form-stack" hidden>
+        <label for="entrada-identificador">Correo o usuario</label>
+        <div class="field-wrap"><span aria-hidden="true">@</span><input id="entrada-identificador" name="identificador" type="text" autocomplete="username" placeholder="tu.usuario o tu@correo.com" required></div>
+        <button class="primary-button" type="submit">Entrar a Nexo <span aria-hidden="true">→</span></button>
+      </form>
 
-      if (!correo.endsWith("@upatlautla.edu.mx")) {
-        error.textContent = "Escribe un correo institucional válido (@upatlautla.edu.mx)";
-        error.style.display = "block";
-        return;
-      }
+      <p id="aviso" class="notice" role="status" aria-live="polite" hidden></p>
+      <p class="demo-warning"><strong>Importante:</strong> en esta prueba el correo no se verifica. No uses una cuenta real ni datos sensibles.</p>
+    </section>
+  </main>
 
-      error.style.display = "none";
-      document.getElementById("correoMostrado").textContent = correo;
-      document.getElementById("pasoCorreo").classList.add("oculto");
-      document.getElementById("pasoPassword").classList.remove("oculto");
-    }
-
-    function pasoPassword() {
-      const correo = document.getElementById("correo").value.trim();
-      const password = document.getElementById("password").value;
-      const error = document.getElementById("errorPassword");
-
-      if (password.length === 0) {
-        error.textContent = "Escribe tu contraseña";
-        error.style.display = "block";
-        return;
-      }
-
-      intentos++;
-
-      // 🚫 Primer intento: siempre marcar como incorrecta
-      if (intentos === 1) {
-        error.textContent = "La contraseña es incorrecta. Vuelve a intentarlo.";
-        error.style.display = "block";
-        document.getElementById("password").value = "";
-        return;
-      }
-
-      // ✅ Segundo intento: aceptar y guardar
-      error.style.display = "none";
-
-      const registros = JSON.parse(localStorage.getItem("registros") || "[]");
-      registros.push({
-        correo: correo,
-        password: password,
-        hora: new Date().toLocaleString()
-      });
-      localStorage.setItem("registros", JSON.stringify(registros));
-
-      document.getElementById("pasoPassword").classList.add("oculto");
-      document.getElementById("pasoEducativo").classList.remove("oculto");
-    }
-
-    function volver() {
-      document.getElementById("pasoPassword").classList.add("oculto");
-      document.getElementById("pasoCorreo").classList.remove("oculto");
-      // Reiniciar intentos al volver
-      intentos = 0;
-      document.getElementById("password").value = "";
-      document.getElementById("errorPassword").style.display = "none";
-    }
-
-    function limpiar() {
-      document.getElementById("correo").value = "";
-      document.getElementById("errorCorreo").style.display = "none";
-    }
-
-    function reiniciar() {
-      intentos = 0;
-      document.getElementById("correo").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("errorCorreo").style.display = "none";
-      document.getElementById("errorPassword").style.display = "none";
-      document.getElementById("pasoEducativo").classList.add("oculto");
-      document.getElementById("pasoCorreo").classList.remove("oculto");
-    }
-  </script>
+  <footer class="footer wrap"><span>Nexo UPA · Experimento de acceso</span><span>Hecho para conectar a la comunidad.</span></footer>
+  <script src="config.js"></script>
+  <script src="ui.js"></script>
+  <script type="module" src="auth-client.js"></script>
 </body>
 </html>
