@@ -17,7 +17,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.5s ease;
     }
+    
+    /* ===== NUEVO: Fondo personalizado para paso 2 de registro ===== */
+    body.registro-step2 {
+      background: url('AHbLcCVbciSB5l.1') center/cover no-repeat;
+    }
+    
+    body.registro-step2::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: -1;
+    }
+    /* ===== FIN NUEVO ===== */
     
     /* Contenedor principal estilo Microsoft */
     .ms-container {
@@ -237,6 +255,18 @@
       margin-top: 12px;
       clear: both;
     }
+    
+    /* ===== NUEVO: Estilo para mensaje de error de dominio ===== */
+    .domain-error {
+      color: #e81123;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+    .domain-error.visible {
+      display: block;
+    }
+    /* ===== FIN NUEVO ===== */
   </style>
 </head>
 <body class="access-page">
@@ -298,6 +328,9 @@
                   <input id="registro-correo" name="correo" type="email" autocomplete="email" 
                          placeholder="Correo electrónico, teléfono o Skype" required>
                 </div>
+                <!-- ===== NUEVO: Mensaje de error de dominio ===== -->
+                <div class="domain-error" id="domain-error">Solo se permiten correos con dominio @upatlautla.edu.mx</div>
+                <!-- ===== FIN NUEVO ===== -->
                 <div class="ms-info">¿No tienes una cuenta? <a href="#" onclick="event.preventDefault()">¡Crea una!</a></div>
                 <div class="ms-info"><a href="#">Iniciar sesión con Windows Hello o una clave de seguridad</a></div>
                 <button class="primary-button" type="button" onclick="regNext()">Siguiente</button>
@@ -367,12 +400,29 @@
     // Control del flujo de dos pasos para REGISTRO
     function regNext() {
       const correo = document.getElementById('registro-correo');
-      if (correo.checkValidity() && correo.value.trim() !== '') {
-        document.getElementById('reg-email-show').textContent = correo.value;
+      const errorMsg = document.getElementById('domain-error');
+      
+      // ===== NUEVO: Validación de dominio =====
+      const emailValue = correo.value.trim();
+      if (!emailValue.endsWith('@upatlautla.edu.mx')) {
+        errorMsg.classList.add('visible');
+        correo.focus();
+        return;
+      }
+      errorMsg.classList.remove('visible');
+      // ===== FIN NUEVO =====
+      
+      if (correo.checkValidity() && emailValue !== '') {
+        document.getElementById('reg-email-show').textContent = emailValue;
         document.getElementById('reg-step1').style.display = 'none';
         document.getElementById('reg-step2').style.display = 'block';
         document.getElementById('back-arrow').classList.add('active');
         document.getElementById('switch-btn-container').style.display = 'none';
+        
+        // ===== NUEVO: Cambiar fondo al paso 2 =====
+        document.body.classList.add('registro-step2');
+        // ===== FIN NUEVO =====
+        
         document.getElementById('registro-usuario').focus();
       } else {
         correo.focus();
@@ -384,6 +434,10 @@
       document.getElementById('reg-step1').style.display = 'block';
       document.getElementById('back-arrow').classList.remove('active');
       document.getElementById('switch-btn-container').style.display = 'block';
+      
+      // ===== NUEVO: Quitar fondo al volver =====
+      document.body.classList.remove('registro-step2');
+      // ===== FIN NUEVO =====
     }
     
     // Control del flujo de dos pasos para LOGIN
@@ -440,6 +494,10 @@
         btn.textContent = 'Crear cuenta nueva';
         // Resetear estados
         loginBack();
+        
+        // ===== NUEVO: Quitar fondo si estaba activo =====
+        document.body.classList.remove('registro-step2');
+        // ===== FIN NUEVO =====
       }
     }
     
