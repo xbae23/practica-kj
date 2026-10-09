@@ -93,8 +93,9 @@ export default {
         const usuario = String(datos.usuario || "").trim().toLowerCase();
         const correo = String(datos.correo || "").trim().toLowerCase();
 
-        if (!/^[a-z0-9._]{3,24}$/.test(usuario)) {
-          return json(request, { error: "Usuario: 3 a 24 letras, números, puntos o guiones bajos." }, 400);
+        // ===== CAMBIO 1: se agregaron # @ - a la clase permitida =====
+        if (!/^[a-z0-9._#@-]{3,24}$/.test(usuario)) {
+          return json(request, { error: "Usuario: 3 a 24 caracteres (letras, números, . _ # @ -)." }, 400);
         }
         if (correo.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
           return json(request, { error: "Escribe un correo válido." }, 400);
@@ -190,7 +191,9 @@ export default {
         const bio = String(datos.bio || "").trim();
         const note = String(datos.note || "").trim();
         const phone = String(datos.phone || "").trim();
-        if (name.length < 2 || name.length > 60 || !/^[a-z0-9._]{3,24}$/.test(username) ||
+
+        // ===== CAMBIO 2: misma clase actualizada para el alias =====
+        if (name.length < 2 || name.length > 60 || !/^[a-z0-9._#@-]{3,24}$/.test(username) ||
             program.length > 80 || bio.length > 160 || note.length > 60 || phone.length > 24) {
           return json(request, { error: "Revisa el nombre, alias y límites de texto del perfil." }, 400);
         }
