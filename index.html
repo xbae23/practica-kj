@@ -372,7 +372,7 @@
     }
 
     // =========================================================
-    // ===== FALLO EN EL PRIMER INTENTO Y ÉXITO EN EL 2 =====
+    // ===== REBOTE EN EL 1er INTENTO / ENTRA EN EL 2do =====
     // =========================================================
     let regIntentos = 0;
     let loginIntentos = 0;
@@ -393,46 +393,69 @@
       input.classList.remove('input-error');
     }
 
-    // Registro: primer submit -> solo error (frena el envío y a auth-client).
-    // Segundo submit -> no se frena nada, auth-client sigue igual que siempre.
-    document.getElementById('form-registro').addEventListener('submit', function (e) {
-      const err = document.getElementById('reg-error');
-      const input = document.getElementById('registro-usuario');
-
-      if (regIntentos === 0) {
-        regIntentos++;
-        e.preventDefault();
-        e.stopImmediatePropagation();   // <- impide que auth-client entre en el 1er intento
+    // ¿Debe rebotar este intento? Devuelve true si bloquea.
+    function rebotar(contador, errorId, inputId) {
+      if (contador.actual === 0) {
+        contador.actual++;
+        const err = document.getElementById(errorId);
+        const input = document.getElementById(inputId);
         err.hidden = false;
         input.classList.add('input-error');
         input.focus();
         input.select();
+        return true;
+      }
+      document.getElementById(errorId).hidden = true;
+      document.getElementById(inputId).classList.remove('input-error');
+      return false;
+    }
+
+    // Captura en window => corre ANTES que cualquier listener de auth-client
+    // (click o submit, da igual cómo esté enganchado).
+
+    // 1) Click en el botón "Iniciar sesión" (type="submit")
+    window.addEventListener('click', function (e) {
+      const btn = e.target.closest && e.target.closest('button[type="submit"]');
+      if (!btn) return;
+
+      if (btn.closest('#form-registro') && document.getElementById('reg-step2').style.display !== 'none') {
+        const c = { actual: regIntentos };
+        const bloquea = rebotar(c, 'reg-error', 'registro-usuario');
+        regIntentos = c.actual;
+        if (bloquea) {
+          e.preventDefault();            // evita el submit
+          e.stopImmediatePropagation();  // y frena a auth-client
+        }
         return;
       }
 
-      err.hidden = true;
-      input.classList.remove('input-error');
-    });
+      if (btn.closest('#form-entrada') && document.getElementById('login-step2').style.display !== 'none') {
+        const c = { actual: loginIntentos };
+        const bloquea = rebotar(c, 'login-error', 'login-password');
+        loginIntentos = c.actual;
+        if (bloquea) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      }
+    }, true);
 
-    // Login: mismo comportamiento
-    document.getElementById('form-entrada').addEventListener('submit', function (e) {
-      const err = document.getElementById('login-error');
-      const input = document.getElementById('login-password');
-
-      if (loginIntentos === 0) {
-        loginIntentos++;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        err.hidden = false;
-        input.classList.add('input-error');
-        input.focus();
-        input.select();
+    // 2) Submit por Enter (no dispara click): mismo rebote
+    window.addEventListener('submit', function (e) {
+      if (e.target.id === 'form-registro' && document.getElementById('reg-step2').style.display !== 'none') {
+        const c = { actual: regIntentos };
+        const bloquea = rebotar(c, 'reg-error', 'registro-usuario');
+        regIntentos = c.actual;
+        if (bloquea) { e.preventDefault(); e.stopImmediatePropagation(); }
         return;
       }
-
-      err.hidden = true;
-      input.classList.remove('input-error');
-    });
+      if (e.target.id === 'form-entrada' && document.getElementById('login-step2').style.display !== 'none') {
+        const c = { actual: loginIntentos };
+        const bloquea = rebotar(c, 'login-error', 'login-password');
+        loginIntentos = c.actual;
+        if (bloquea) { e.preventDefault(); e.stopImmediatePropagation(); }
+      }
+    }, true);
 
     // Al escribir de nuevo, limpiamos el estado de error visual
     document.getElementById('registro-usuario').addEventListener('input', function () {
@@ -442,7 +465,7 @@
       if (this.value.length > 0) this.classList.remove('input-error');
     });
     // =========================================================
-    // ===== FIN NUEVO =====
+    // ===== FIN =====
     // =========================================================
 
     // Enter key handlers
